@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-nextapi
+  labels: 
+    app: backend-nextapi
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-nextapi
+  template: 
+    metadata:
+      labels:
+        app: backend-nextapi
+        tier: backend
+    spec:
+      containers:
+        - name: backend-nextapi
+          image: komavideo/deeplearnaws-nextapi:v1
+          ports:
+            - containerPort: 8080
+---
+# This is for apply in ClusterIP type
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextapi-service # 重要: 前端 Web 应用通过该名称访问 API 服务
+  labels: 
+    app: backend-nextapi
+    tier: backend
+spec:
+  selector:
+    app: backend-nextapi
+  ports: 
+    - name: http
+      port: 8080
+      targetPort: 8080

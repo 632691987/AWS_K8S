@@ -1,0 +1,43 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: deeplearnaws-nextweb-cluster
+  region: ap-northeast-1
+
+iam:
+  withOIDC: true
+
+vpc:
+  subnets:
+    public:
+      public-eks1:
+        id: subnet-0b7f77d791582e6b3
+      public-eks2:
+        id: subnet-06e1cc40b41368ab3
+
+managedNodeGroups:
+  - name: nodegroup-1
+    amiFamily: AmazonLinux2
+    instanceType: t3.micro
+    minSize: 1
+    maxSize: 4
+    desiredCapacity: 2
+    volumeSize: 8
+    volumeType: gp2
+    labels:
+      nodegroup-type: frontend-workloads
+    ssh:
+      allow: true
+      publicKeyName: deeplearnaws-ssh-key
+    securityGroups:
+      attachIDs:
+        - sg-0e30a29941920eb78
+    iam:
+      withAddonPolicies:
+        imageBuilder: true
+        autoScaler: true
+        externalDNS: true
+        albIngress: true
+        ebs: true
+        cloudWatch: true

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextweb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextweb-deployment
+  template:
+    metadata:
+      name: nextweb-pod
+      labels:
+        app: nextweb-deployment
+    spec:
+      containers:
+        - name: nextweb
+          image: komavideo/deeplearnaws-nextweb:v8
+          ports:
+            - containerPort: 3000
+          # 存活探测: 一旦容器启动失败，则会重新启动容器 "RESTARTS"
+          # livenessProbe:
+          # 就绪探测: 一旦容器启动失败，则会暂停容器提供服务，不会重新启动容器
+          readinessProbe:
+            httpGet:
+              path: /api/hello
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10

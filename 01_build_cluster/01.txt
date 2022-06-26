@@ -1,0 +1,13 @@
+1, Build a EC2 server:
+Upload ```cloud_formation_template.yml``` template, remind that security group build up, and memory type selection.
+
+
+2, Build a K8S cluster:
+In above created EC2 server, and type following command:
+eksctl create cluster --name=vincent-nextweb-cluster --region=eu-west-2 --zones=eu-west-2a,eu-west-2c --with-oidc --without-nodegroup
+
+3, Build a node group after step 2:
+eksctl create nodegroup --cluster=vincent-nextweb-cluster --region=eu-west-2 --name=vincent-nextweb-ng --node-type=t3.large --nodes=2 --nodes-min=2 --nodes-max=4 --node-volume-size=20 --managed --asg-access --external-dns-access --full-ecr-access --alb-ingress-access
+
+change group number:
+eksctl scale nodegroup --cluster=vincent-nextweb-cluster --region=eu-west-2 --nodes=4 --name=vincent-nextweb-ng

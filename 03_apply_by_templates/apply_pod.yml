@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nextweb-pod
+  labels: 
+    app: nextweb
+spec:
+  containers:
+    - name: nextweb
+      image: komavideo/deeplearnaws-nextweb:v1
+      ports:
+        - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextweb-nodeport-service
+spec:
+  type: NodePort
+  selector:
+    # 从标签中选取操作目标
+    app: nextweb # Map to above metadata:name
+  ports: 
+    - name: http
+      port: 3000
+      targetPort: 3000
+      #nodePort: 32020
